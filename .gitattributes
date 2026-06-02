@@ -11,4 +11,5 @@
 *.unity filter=lfs diff=lfs merge=lfs -text
 *.mat filter=lfs diff=lfs merge=lfs -text
 *.anim filter=lfs diff=lfs merge=lfs -text
+Packages/local/*.tgz filter=lfs diff=lfs merge=lfs -text
 Packages/local/com.github.homuler.mediapipe-0.16.3.tgz filter=lfs diff=lfs merge=lfs -text
