@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Photon.Pun;
 
-public class ElectricalSystem : MonoBehaviour
+public class ElectricalSystem : MonoBehaviourPun
 {
     [System.Serializable]
     public class ElectricalBox
@@ -40,7 +41,8 @@ public class ElectricalSystem : MonoBehaviour
 
     void Update()
     {
-        HandleSpawning();
+        if (PhotonNetwork.IsMasterClient)
+            HandleSpawning();
         HandleBoxes();
     }
 
@@ -74,7 +76,7 @@ public class ElectricalSystem : MonoBehaviour
             if (box.isBlackedOut)
             {
                 if (box.playerNearby && Input.GetKeyDown(KeyCode.Q))
-                    FixBox(box);
+                    photonView.RPC("RPC_FixBox", RpcTarget.All, boxes.IndexOf(box));
                 continue;
             }
 
@@ -98,20 +100,33 @@ public class ElectricalSystem : MonoBehaviour
 
     private void TriggerRandomFailure()
     {
-        List<ElectricalBox> available = new List<ElectricalBox>();
+        List<int> available = new List<int>();
 
-        foreach (ElectricalBox box in boxes)
+        for (int i = 0; i < boxes.Count; i++)
         {
-            if (!box.isFlickering && !box.isBlackedOut)
-                available.Add(box);
+            if (!boxes[i].isFlickering && !boxes[i].isBlackedOut)
+                available.Add(i);
         }
 
         if (available.Count == 0) return;
 
-        ElectricalBox selected = available[Random.Range(0, available.Count)];
+        int selectedIndex = available[Random.Range(0, available.Count)];
+        photonView.RPC("RPC_TriggerFailure", RpcTarget.All, selectedIndex);
+    }
+
+    [PunRPC]
+    private void RPC_TriggerFailure(int index)
+    {
+        ElectricalBox selected = boxes[index];
         selected.isFlickering = true;
         selected.flickerTimer = 0f;
         selected.flickerCounter = 0f;
+    }
+
+    [PunRPC]
+    private void RPC_FixBox(int index)
+    {
+        FixBox(boxes[index]);
     }
 
     private void BlackoutBox(ElectricalBox box)

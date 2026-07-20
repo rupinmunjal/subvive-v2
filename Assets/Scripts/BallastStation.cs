@@ -14,7 +14,7 @@ public class BallastStation : MonoBehaviour
 
         if (playerNearby && Input.GetKeyDown(KeyCode.Q) && cooldownTimer <= 0f)
         {
-            HullManager.Instance.PumpBallast();
+            HullManager.Instance.photonView.RPC("RPC_PumpBallast", RpcTarget.MasterClient);
             cooldownTimer = interactCooldown;
         }
     }
