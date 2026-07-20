@@ -9,6 +9,7 @@ public class AntennaTrigger : MonoBehaviour
 
     private bool playerNearby = false;
     private float repairProgress = 0f;
+    private bool repairRequested = false;
 
     void Update()
     {
@@ -17,15 +18,17 @@ public class AntennaTrigger : MonoBehaviour
             if (!antennaSystem.antennas[antennaIndex].isDamaged) return;
 
             repairProgress += Time.deltaTime;
-            if (repairProgress >= repairTime)
+            if (repairProgress >= repairTime && !repairRequested)
             {
                 repairProgress = 0f;
-                antennaSystem.RepairAntenna(antennaSystem.antennas[antennaIndex]);
+                repairRequested = true;
+                antennaSystem.RequestRepairAntenna(antennaIndex);
             }
         }
         else
         {
             repairProgress = 0f;
+            repairRequested = false;
         }
     }
 

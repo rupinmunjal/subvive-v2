@@ -1,6 +1,7 @@
 using UnityEngine;
+using Photon.Pun;
 
-public class LeakSpawner : MonoBehaviour
+public class LeakSpawner : MonoBehaviourPun
 {
     public LeakPoint[] leakPoints;
     public float timeBetweenLeaks = 20f;
@@ -9,6 +10,8 @@ public class LeakSpawner : MonoBehaviour
 
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+
         timer += Time.deltaTime;
 
         if (timer >= timeBetweenLeaks)
@@ -20,13 +23,13 @@ public class LeakSpawner : MonoBehaviour
 
     private void TriggerRandomLeak()
     {
-        // build a list of leak points that are NOT currently leaking
-        System.Collections.Generic.List<LeakPoint> available = new();
+        // build a list of indices for leak points that are NOT currently leaking
+        System.Collections.Generic.List<int> available = new();
 
-        foreach (LeakPoint lp in leakPoints)
+        for (int i = 0; i < leakPoints.Length; i++)
         {
-            if (!lp.isLeaking)
-                available.Add(lp);
+            if (!leakPoints[i].isLeaking)
+                available.Add(i);
         }
 
         if (available.Count == 0)
@@ -35,7 +38,24 @@ public class LeakSpawner : MonoBehaviour
             return;
         }
 
-        int randomIndex = Random.Range(0, available.Count);
-        available[randomIndex].TriggerLeak();
+        int randomIndex = available[Random.Range(0, available.Count)];
+        photonView.RPC("RPC_TriggerLeak", RpcTarget.All, randomIndex);
+    }
+
+    [PunRPC]
+    private void RPC_TriggerLeak(int index)
+    {
+        leakPoints[index].TriggerLeak();
+    }
+
+    public void RequestCompleteRepair(int index)
+    {
+        photonView.RPC("RPC_CompleteRepair", RpcTarget.All, index);
+    }
+
+    [PunRPC]
+    private void RPC_CompleteRepair(int index)
+    {
+        leakPoints[index].CompleteRepairNetworked();
     }
 }
