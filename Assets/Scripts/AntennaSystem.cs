@@ -1,6 +1,7 @@
 using UnityEngine;
+using Photon.Pun;
 
-public class AntennaSystem : MonoBehaviour
+public class AntennaSystem : MonoBehaviourPun
 {
     [System.Serializable]
     public class Antenna
@@ -62,7 +63,8 @@ public class AntennaSystem : MonoBehaviour
 
     void Update()
     {
-        HandleSpawning();
+        if (PhotonNetwork.IsMasterClient)
+            HandleSpawning();
         HandleAntennas();
     }
 
@@ -80,16 +82,23 @@ public class AntennaSystem : MonoBehaviour
 
     private void TriggerRandomAntenna()
     {
-        System.Collections.Generic.List<Antenna> available = new();
-        foreach (Antenna a in antennas)
+        System.Collections.Generic.List<int> available = new();
+        for (int i = 0; i < antennas.Length; i++)
         {
-            if (!a.isDamaged)
-                available.Add(a);
+            if (!antennas[i].isDamaged)
+                available.Add(i);
         }
 
         if (available.Count == 0) return;
 
-        Antenna selected = available[Random.Range(0, available.Count)];
+        int selectedIndex = available[Random.Range(0, available.Count)];
+        photonView.RPC("RPC_TriggerAntenna", RpcTarget.All, selectedIndex);
+    }
+
+    [PunRPC]
+    private void RPC_TriggerAntenna(int index)
+    {
+        Antenna selected = antennas[index];
         selected.isDamaged = true;
         selected.damageTimer = 0f;
         antennaCurrentlyDamaged = true;
@@ -145,8 +154,15 @@ public class AntennaSystem : MonoBehaviour
         }
     }
 
-    public void RepairAntenna(Antenna antenna)
+    public void RequestRepairAntenna(int index)
     {
+        photonView.RPC("RPC_RepairAntenna", RpcTarget.All, index);
+    }
+
+    [PunRPC]
+    private void RPC_RepairAntenna(int index)
+    {
+        Antenna antenna = antennas[index];
         antenna.isDamaged = false;
         antenna.damageTimer = 0f;
         antennaCurrentlyDamaged = false;

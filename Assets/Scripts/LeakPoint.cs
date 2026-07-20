@@ -1,8 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class LeakPoint : MonoBehaviour
 {
+    [Header("Network Settings")]
+    public int leakIndex;
+    public LeakSpawner spawner;
+
     [Header("Repair Settings")]
     public float repairTime = 3f;
     public float hpRestoreAmount = 10f;
@@ -30,6 +35,7 @@ public class LeakPoint : MonoBehaviour
     private float repairProgress = 0f;
     private float leakTimer = 0f;
     private int currentStage = 0;
+    private bool repairRequested = false;
 
     void Start()
     {
@@ -49,7 +55,8 @@ public class LeakPoint : MonoBehaviour
 
         float damage = currentStage == 1 ? stage1Damage :
                        currentStage == 2 ? stage2Damage : stage3Damage;
-        HullManager.Instance.TakeDamage(damage * Time.deltaTime);
+        if (PhotonNetwork.IsMasterClient)
+            HullManager.Instance.TakeDamage(damage * Time.deltaTime);
 
         if (playerNearby && Input.GetKey(KeyCode.Q))
         {
@@ -57,8 +64,11 @@ public class LeakPoint : MonoBehaviour
             if (progressBar != null)
                 progressBar.value = repairProgress / repairTime;
 
-            if (repairProgress >= repairTime)
-                CompleteRepair();
+            if (repairProgress >= repairTime && !repairRequested)
+            {
+                repairRequested = true;
+                spawner.RequestCompleteRepair(leakIndex);
+            }
         }
         else
         {
@@ -73,20 +83,26 @@ public class LeakPoint : MonoBehaviour
         isLeaking = true;
         leakTimer = 0f;
         repairProgress = 0f;
-        HullManager.Instance.RegisterLeak();
+        repairRequested = false;
+        if (PhotonNetwork.IsMasterClient)
+            HullManager.Instance.RegisterLeak();
         SetStage(1);
 
         if (progressBar != null)
             progressBar.gameObject.SetActive(true);
     }
 
-    private void CompleteRepair()
+    public void CompleteRepairNetworked()
     {
         isLeaking = false;
         repairProgress = 0f;
         leakTimer = 0f;
-        HullManager.Instance.UnregisterLeak();
-        HullManager.Instance.RepairHull(hpRestoreAmount);
+        repairRequested = false;
+        if (PhotonNetwork.IsMasterClient)
+        {
+            HullManager.Instance.UnregisterLeak();
+            HullManager.Instance.RepairHull(hpRestoreAmount);
+        }
         SetStage(0);
 
         if (progressBar != null)

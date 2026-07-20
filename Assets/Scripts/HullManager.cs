@@ -1,6 +1,7 @@
 using UnityEngine;
+using Photon.Pun;
 
-public class HullManager : MonoBehaviour
+public class HullManager : MonoBehaviourPun, IPunObservable
 {
     public static HullManager Instance;
 
@@ -33,9 +34,29 @@ public class HullManager : MonoBehaviour
 
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+
         UpdateBallast();
         UpdateDepth();
         UpdateDestinationTimer();
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(shipHP);
+            stream.SendNext(ballast);
+            stream.SendNext(currentDepth);
+            stream.SendNext(currentTime);
+        }
+        else
+        {
+            shipHP = (float)stream.ReceiveNext();
+            ballast = (float)stream.ReceiveNext();
+            currentDepth = (float)stream.ReceiveNext();
+            currentTime = (float)stream.ReceiveNext();
+        }
     }
 
     private void UpdateBallast()
@@ -73,6 +94,12 @@ public class HullManager : MonoBehaviour
     {
         ballast -= ballastPumpAmount;
         ballast = Mathf.Clamp(ballast, 0f, 100f);
+    }
+
+    [PunRPC]
+    public void RPC_PumpBallast()
+    {
+        PumpBallast();
     }
 
     public void RegisterLeak()
