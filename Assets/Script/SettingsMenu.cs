@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
 
 public class SettingsMenu : MonoBehaviour
@@ -37,7 +38,7 @@ public class SettingsMenu : MonoBehaviour
         fullscreenToggle.SetIsOnWithoutNotify(savedFullscreen);
 
         masterVolumeSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat("MasterVolume", 1f));
-        musicVolumeSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat("MusicVolume", 1f));
+        musicVolumeSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat("MusicVolume", 0.5f));
         sfxVolumeSlider.SetValueWithoutNotify(PlayerPrefs.GetFloat("SFXVolume", 1f));
 
         loading = false;
@@ -81,6 +82,9 @@ public class SettingsMenu : MonoBehaviour
 
         PlayerPrefs.SetFloat("MusicVolume", volume);
         PlayerPrefs.Save();
+
+        if (BackgroundMusic.Instance != null)
+            BackgroundMusic.Instance.SetVolume(volume);
     }
 
     public void SetSFXVolume(float volume)
@@ -115,6 +119,12 @@ public class SettingsMenu : MonoBehaviour
 
     public void BackToMenu()
     {
-        SceneManager.LoadScene("HomeScene");
+        StartCoroutine(BackToMenuAfterDelay());
+    }
+
+    private IEnumerator BackToMenuAfterDelay()
+    {
+        yield return new WaitForSeconds(0.15f);
+        yield return SceneManager.LoadSceneAsync("HomeScene");
     }
 }

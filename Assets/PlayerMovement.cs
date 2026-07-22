@@ -8,6 +8,7 @@ public class PlayerMovement : MonoBehaviourPun
     public Rigidbody2D player1;
     public float moveSpeed = 5f;
     public float climbSpeed = 4f;
+    public float sprintMultiplier = 1.5f;
     public Animator animator;
     public SpriteRenderer spriteRenderer;
     public LayerMask ladderLayer;
@@ -15,6 +16,7 @@ public class PlayerMovement : MonoBehaviourPun
     private float horizontalMovement;
     private bool climbInput;
     private bool descendInput;
+    private bool sprintInput;
     private bool isOnLadder;
     private float defaultGravity;
     private Collider2D currentLadderCollider;
@@ -30,7 +32,8 @@ public class PlayerMovement : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
 
-        player1.linearVelocity = new Vector2(horizontalMovement * moveSpeed, player1.linearVelocity.y);
+        float currentMoveSpeed = sprintInput ? moveSpeed * sprintMultiplier : moveSpeed;
+        player1.linearVelocity = new Vector2(horizontalMovement * currentMoveSpeed, player1.linearVelocity.y);
 
         if (isOnLadder)
         {
@@ -82,6 +85,12 @@ public class PlayerMovement : MonoBehaviourPun
     {
         if (!photonView.IsMine) return;
         descendInput = context.ReadValueAsButton();
+    }
+
+    public void Sprint(InputAction.CallbackContext context)
+    {
+        if (!photonView.IsMine) return;
+        sprintInput = context.ReadValueAsButton();
     }
 
     void OnTriggerEnter2D(Collider2D other)
