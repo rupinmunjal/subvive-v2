@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Photon.Pun;
 
-public class FireSystem : MonoBehaviour
+public class FireSystem : MonoBehaviourPun
 {
     [System.Serializable]
     public class FirePoint
@@ -36,6 +37,8 @@ public class FireSystem : MonoBehaviour
 
     void Update()
     {
+        if (!PhotonNetwork.IsMasterClient) return;
+
         timer += Time.deltaTime;
         if (timer >= timeBetweenFires)
         {
@@ -75,7 +78,25 @@ public class FireSystem : MonoBehaviour
         if (available.Count == 0) return;
 
         FirePoint selected = available[Random.Range(0, available.Count)];
-        ActivateFire(selected);
+        int index = System.Array.IndexOf(firePoints, selected);
+        photonView.RPC("RPC_ActivateFire", RpcTarget.All, index);
+    }
+
+    [PunRPC]
+    private void RPC_ActivateFire(int index)
+    {
+        ActivateFire(firePoints[index]);
+    }
+
+    public void RequestExtinguishFire(int index)
+    {
+        photonView.RPC("RPC_ExtinguishFire", RpcTarget.All, index);
+    }
+
+    [PunRPC]
+    private void RPC_ExtinguishFire(int index)
+    {
+        ExtinguishFire(firePoints[index]);
     }
 
     private bool LadderHasFire(LadderBlock ladder)
@@ -92,7 +113,10 @@ public class FireSystem : MonoBehaviour
     {
         fp.isActive = true;
         if (fp.fireObject != null)
+        {
             fp.fireObject.SetActive(true);
+            AlertManager.Instance.Register(fp.fireObject.transform, 3);
+        }
         UpdateLadderBlock(fp.ladder);
     }
 
@@ -100,7 +124,10 @@ public class FireSystem : MonoBehaviour
     {
         fp.isActive = false;
         if (fp.fireObject != null)
+        {
             fp.fireObject.SetActive(false);
+            AlertManager.Instance.Unregister(fp.fireObject.transform);
+        }
         UpdateLadderBlock(fp.ladder);
     }
 
@@ -122,5 +149,10 @@ public class FireSystem : MonoBehaviour
         foreach (FirePoint fp in firePoints)
             if (fp.fireObject == obj) return fp;
         return null;
+    }
+
+    public int GetFirePointIndex(FirePoint fp)
+    {
+        return System.Array.IndexOf(firePoints, fp);
     }
 }

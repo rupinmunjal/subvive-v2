@@ -1,6 +1,7 @@
 using UnityEngine;
+using Photon.Pun;
 
-public class EngineSystem : MonoBehaviour
+public class EngineSystem : MonoBehaviourPun
 {
     [Header("Settings")]
     public float minTimeBetweenFailures = 30f;
@@ -40,6 +41,8 @@ public class EngineSystem : MonoBehaviour
             return;
         }
 
+        if (!PhotonNetwork.IsMasterClient) return;
+
         timer += Time.deltaTime;
         if (timer >= nextFailureTime)
         {
@@ -50,11 +53,24 @@ public class EngineSystem : MonoBehaviour
 
     public void TriggerFailure()
     {
-        isBroken = true;
-        HullManager.Instance.PauseDestinationTimer(true);
+        photonView.RPC("RPC_TriggerFailure", RpcTarget.All);
     }
 
-    public void FixEngine()
+    [PunRPC]
+    private void RPC_TriggerFailure()
+    {
+        isBroken = true;
+        HullManager.Instance.PauseDestinationTimer(true);
+        AlertManager.Instance.Register(transform, 3);
+    }
+
+    public void RequestFixEngine()
+    {
+        photonView.RPC("RPC_FixEngine", RpcTarget.All);
+    }
+
+    [PunRPC]
+    private void RPC_FixEngine()
     {
         isBroken = false;
         engineRenderer.color = normalColor;
@@ -63,6 +79,7 @@ public class EngineSystem : MonoBehaviour
         timer = 0f;
         SetNextFailureTime();
         HullManager.Instance.PauseDestinationTimer(false);
+        AlertManager.Instance.Unregister(transform);
     }
 
     private void SetNextFailureTime()

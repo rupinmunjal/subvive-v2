@@ -21,7 +21,7 @@ public class OxygenStation : MonoBehaviour
 
     void Update()
     {
-        if (playerNearby && nearbyPlayerOxygen != null && Input.GetKey(KeyCode.Q))
+        if (playerNearby && nearbyPlayerOxygen != null && Input.GetKey(KeyCode.E))
         {
             holdTimer += Time.deltaTime;
 

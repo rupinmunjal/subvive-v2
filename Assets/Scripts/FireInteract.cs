@@ -10,10 +10,12 @@ public class FireInteract : MonoBehaviour
     private bool playerNearby = false;
     private float holdTimer = 0f;
     private FireSystem.FirePoint myFirePoint;
+    private int myFireIndex;
 
     void Start()
     {
         myFirePoint = fireSystem.GetFirePointByObject(gameObject);
+        myFireIndex = fireSystem.GetFirePointIndex(myFirePoint);
         if (progressBar != null)
             progressBar.gameObject.SetActive(false);
     }
@@ -27,7 +29,7 @@ public class FireInteract : MonoBehaviour
             return;
         }
 
-        if (playerNearby && Input.GetKey(KeyCode.Q))
+        if (playerNearby && Input.GetKey(KeyCode.E))
         {
             holdTimer += Time.deltaTime;
 
@@ -45,7 +47,7 @@ public class FireInteract : MonoBehaviour
                     progressBar.value = 0f;
                     progressBar.gameObject.SetActive(false);
                 }
-                fireSystem.ExtinguishFire(myFirePoint);
+                fireSystem.RequestExtinguishFire(myFireIndex);
             }
         }
         else
