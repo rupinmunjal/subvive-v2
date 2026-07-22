@@ -40,6 +40,8 @@ public class LeakPoint : MonoBehaviour
     void Start()
     {
         SetStage(0);
+        if (progressBar != null)
+            progressBar.gameObject.SetActive(false);
     }
 
     void Update()
@@ -55,12 +57,17 @@ public class LeakPoint : MonoBehaviour
 
         float damage = currentStage == 1 ? stage1Damage :
                        currentStage == 2 ? stage2Damage : stage3Damage;
+
         if (PhotonNetwork.IsMasterClient)
             HullManager.Instance.TakeDamage(damage * Time.deltaTime);
 
         if (playerNearby && Input.GetKey(KeyCode.Q))
         {
+            if (progressBar != null)
+                progressBar.gameObject.SetActive(true);
+
             repairProgress += Time.deltaTime;
+
             if (progressBar != null)
                 progressBar.value = repairProgress / repairTime;
 
@@ -74,7 +81,10 @@ public class LeakPoint : MonoBehaviour
         {
             repairProgress = 0f;
             if (progressBar != null)
+            {
                 progressBar.value = 0f;
+                progressBar.gameObject.SetActive(false);
+            }
         }
     }
 
@@ -84,12 +94,14 @@ public class LeakPoint : MonoBehaviour
         leakTimer = 0f;
         repairProgress = 0f;
         repairRequested = false;
+
         if (PhotonNetwork.IsMasterClient)
             HullManager.Instance.RegisterLeak();
+
         SetStage(1);
 
         if (progressBar != null)
-            progressBar.gameObject.SetActive(true);
+            progressBar.gameObject.SetActive(false);
     }
 
     public void CompleteRepairNetworked()
@@ -98,11 +110,13 @@ public class LeakPoint : MonoBehaviour
         repairProgress = 0f;
         leakTimer = 0f;
         repairRequested = false;
+
         if (PhotonNetwork.IsMasterClient)
         {
             HullManager.Instance.UnregisterLeak();
             HullManager.Instance.RepairHull(hpRestoreAmount);
         }
+
         SetStage(0);
 
         if (progressBar != null)

@@ -5,8 +5,8 @@ public class PlayerSetup : MonoBehaviourPun
 {
     public PlayerMovement movement;
 
-    public GameObject camera;
-    
+    public new GameObject camera;
+
     void Start()
     {
         if (photonView.IsMine)

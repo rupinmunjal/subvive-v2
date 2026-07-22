@@ -10,22 +10,23 @@ public class HullManager : MonoBehaviourPun, IPunObservable
     public float hpLossPerLeak = 5f;
 
     [Header("Ballast Settings")]
-    public float ballast = 0f; // 0-100%
-    public float baseFillRate = 0.5f; // % per second
-    public float leakFillRate = 0.3f; // additional % per second per active leak
-    public float ballastPumpAmount = 5f; // % per press
+    public float ballast = 0f;
+    public float baseFillRate = 0.5f;
+    public float leakFillRate = 0.3f;
+    public float ballastPumpAmount = 5f;
 
     [Header("Depth Settings")]
     public float minDepth = -100f;
     public float maxDepth = -400f;
     public float currentDepth = -100f;
-    public float depthFollowSpeed = 2f; // how fast depth follows ballast
+    public float depthFollowSpeed = 2f;
 
     [Header("Destination Settings")]
-    public float destinationTime = 600f; // 10 minutes in seconds
+    public float destinationTime = 600f;
     public float currentTime = 600f;
 
     private int activeLeaks = 0;
+    private bool destinationPaused = false;
 
     private void Awake()
     {
@@ -35,7 +36,6 @@ public class HullManager : MonoBehaviourPun, IPunObservable
     void Update()
     {
         if (!PhotonNetwork.IsMasterClient) return;
-
         UpdateBallast();
         UpdateDepth();
         UpdateDestinationTimer();
@@ -68,13 +68,14 @@ public class HullManager : MonoBehaviourPun, IPunObservable
 
     private void UpdateDepth()
     {
-        // depth follows ballast level
         float targetDepth = Mathf.Lerp(minDepth, maxDepth, ballast / 100f);
         currentDepth = Mathf.MoveTowards(currentDepth, targetDepth, depthFollowSpeed * Time.deltaTime);
     }
 
     private void UpdateDestinationTimer()
     {
+        if (destinationPaused) return;
+
         float speedMultiplier = GetSpeedMultiplier();
         currentTime -= Time.deltaTime * speedMultiplier;
         currentTime = Mathf.Clamp(currentTime, 0f, destinationTime);
@@ -85,9 +86,13 @@ public class HullManager : MonoBehaviourPun, IPunObservable
 
     public float GetSpeedMultiplier()
     {
-        // 1.0x at -100m, 0.1x at -400m
         float t = (currentDepth - minDepth) / (maxDepth - minDepth);
         return Mathf.Lerp(1f, 0.1f, t);
+    }
+
+    public void PauseDestinationTimer(bool paused)
+    {
+        destinationPaused = paused;
     }
 
     public void PumpBallast()
