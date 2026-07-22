@@ -152,6 +152,14 @@ public class AntennaSystem : MonoBehaviourPun
                 SetVoiceVolume(-80f);
                 break;
         }
+
+        if (a.level0Visual != null)
+        {
+            if (level == 0)
+                AlertManager.Instance.Unregister(a.level0Visual.transform);
+            else
+                AlertManager.Instance.Register(a.level0Visual.transform, level);
+        }
     }
 
     public void RequestRepairAntenna(int index)
