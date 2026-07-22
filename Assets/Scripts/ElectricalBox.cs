@@ -31,7 +31,7 @@ public class ElectricalBox : MonoBehaviour
     {
         if (isBlackedOut)
         {
-            if (playerNearby && Input.GetKeyDown(KeyCode.Q))
+            if (playerNearby && Input.GetKeyDown(KeyCode.E))
                 FixElectrical();
             return;
         }

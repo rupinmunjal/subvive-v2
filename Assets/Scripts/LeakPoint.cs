@@ -61,7 +61,7 @@ public class LeakPoint : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
             HullManager.Instance.TakeDamage(damage * Time.deltaTime);
 
-        if (playerNearby && Input.GetKey(KeyCode.Q))
+        if (playerNearby && Input.GetKey(KeyCode.E))
         {
             if (progressBar != null)
                 progressBar.gameObject.SetActive(true);
@@ -133,6 +133,11 @@ public class LeakPoint : MonoBehaviour
         if (stage1Visual != null) stage1Visual.SetActive(stage == 1);
         if (stage2Visual != null) stage2Visual.SetActive(stage == 2);
         if (stage3Visual != null) stage3Visual.SetActive(stage == 3);
+
+        if (stage == 0)
+            AlertManager.Instance.Unregister(transform);
+        else
+            AlertManager.Instance.Register(transform, stage);
     }
 
     private void OnTriggerEnter2D(Collider2D other)

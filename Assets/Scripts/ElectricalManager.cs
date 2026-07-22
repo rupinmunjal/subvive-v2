@@ -75,7 +75,7 @@ public class ElectricalSystem : MonoBehaviourPun
         {
             if (box.isBlackedOut)
             {
-                if (box.playerNearby && Input.GetKeyDown(KeyCode.Q))
+                if (box.playerNearby && Input.GetKeyDown(KeyCode.E))
                     photonView.RPC("RPC_FixBox", RpcTarget.All, boxes.IndexOf(box));
                 continue;
             }
@@ -134,7 +134,10 @@ public class ElectricalSystem : MonoBehaviourPun
         box.isFlickering = false;
         box.isBlackedOut = true;
         if (box.blackout != null)
+        {
             box.blackout.SetActive(true);
+            AlertManager.Instance.Register(box.blackout.transform, 3);
+        }
     }
 
     private void FixBox(ElectricalBox box)
@@ -143,7 +146,10 @@ public class ElectricalSystem : MonoBehaviourPun
         box.isBlackedOut = false;
         box.flickerTimer = 0f;
         if (box.blackout != null)
+        {
             box.blackout.SetActive(false);
+            AlertManager.Instance.Unregister(box.blackout.transform);
+        }
     }
 
     private void SetNextFailureTime()
