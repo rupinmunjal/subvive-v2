@@ -61,7 +61,7 @@ public class LeakPoint : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
             HullManager.Instance.TakeDamage(damage * Time.deltaTime);
 
-        if (playerNearby && Input.GetKey(KeyCode.E))
+        if (playerNearby && Input.GetKey(KeyCode.Q))
         {
             if (progressBar != null)
                 progressBar.gameObject.SetActive(true);

@@ -21,10 +21,20 @@ public class OxygenManager : MonoBehaviourPun
 
     private PlayerMovement movement;
     private SpriteRenderer spriteRenderer;
+    private int lastDisplayedCountdown = -1;
 
     void Start()
     {
-        if (!photonView.IsMine) return;
+        if (!photonView.IsMine)
+        {
+            // this UI belongs to a remote player's prefab instance - hide it so it
+            // doesn't sit on screen showing stale/default placeholder text forever
+            if (oxygenText != null)
+                oxygenText.gameObject.SetActive(false);
+            if (deathPanel != null)
+                deathPanel.SetActive(false);
+            return;
+        }
 
         currentOxygen = maxOxygen;
         movement = GetComponent<PlayerMovement>();
@@ -42,8 +52,12 @@ public class OxygenManager : MonoBehaviourPun
         {
             respawnTimer -= Time.deltaTime;
 
-            if (deathCountdownText != null)
-                deathCountdownText.text = "You died, respawning in " + Mathf.CeilToInt(respawnTimer);
+            int displayValue = Mathf.CeilToInt(respawnTimer);
+            if (deathCountdownText != null && displayValue != lastDisplayedCountdown)
+            {
+                lastDisplayedCountdown = displayValue;
+                deathCountdownText.text = "You died, respawning in " + displayValue;
+            }
 
             if (respawnTimer <= 0f)
                 Respawn();
@@ -67,6 +81,7 @@ public class OxygenManager : MonoBehaviourPun
     {
         isDead = true;
         respawnTimer = respawnTime;
+        lastDisplayedCountdown = -1;
 
         // hide sprite
         if (spriteRenderer != null)

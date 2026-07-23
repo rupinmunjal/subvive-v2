@@ -75,7 +75,7 @@ public class ElectricalSystem : MonoBehaviourPun
         {
             if (box.isBlackedOut)
             {
-                if (box.playerNearby && Input.GetKeyDown(KeyCode.E))
+                if (box.playerNearby && Input.GetKeyDown(KeyCode.Q))
                     photonView.RPC("RPC_FixBox", RpcTarget.All, boxes.IndexOf(box));
                 continue;
             }

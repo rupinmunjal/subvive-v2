@@ -35,22 +35,18 @@ public class PlayerMovement : MonoBehaviourPun
         float currentMoveSpeed = sprintInput ? moveSpeed * sprintMultiplier : moveSpeed;
         player1.linearVelocity = new Vector2(horizontalMovement * currentMoveSpeed, player1.linearVelocity.y);
 
-        if (isOnLadder)
+        // check if ladder is on fire
+        bool ladderOnFire = currentLadderCollider != null &&
+                            currentLadderCollider.GetComponent<LadderBlock>() != null &&
+                            currentLadderCollider.GetComponent<LadderBlock>().isBlocked;
+
+        if (isOnLadder && !ladderOnFire)
         {
             player1.gravityScale = 0f;
 
             float verticalInput = 0f;
-
-            // check if ladder is on fire
-            bool ladderOnFire = currentLadderCollider != null &&
-                                currentLadderCollider.GetComponent<LadderBlock>() != null &&
-                                currentLadderCollider.GetComponent<LadderBlock>().isBlocked;
-
-            if (!ladderOnFire)
-            {
-                if (climbInput) verticalInput = 1f;
-                else if (descendInput) verticalInput = -1f;
-            }
+            if (climbInput) verticalInput = 1f;
+            else if (descendInput) verticalInput = -1f;
 
             player1.linearVelocity = new Vector2(player1.linearVelocity.x, verticalInput * climbSpeed);
         }

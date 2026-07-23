@@ -11,7 +11,7 @@ public class EngineTrigger : MonoBehaviour
 
     void Update()
     {
-        if (playerNearby && Input.GetKeyDown(KeyCode.E) && !minigameActive)
+        if (playerNearby && Input.GetKeyDown(KeyCode.Q) && !minigameActive)
         {
             if (engineSystem.isBroken)
             {

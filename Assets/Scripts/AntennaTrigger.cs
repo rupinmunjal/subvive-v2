@@ -13,7 +13,7 @@ public class AntennaTrigger : MonoBehaviour
 
     void Update()
     {
-        if (playerNearby && Input.GetKey(KeyCode.E))
+        if (playerNearby && Input.GetKey(KeyCode.Q))
         {
             if (!antennaSystem.antennas[antennaIndex].isDamaged) return;
 

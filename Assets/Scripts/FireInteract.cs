@@ -29,7 +29,7 @@ public class FireInteract : MonoBehaviour
             return;
         }
 
-        if (playerNearby && Input.GetKey(KeyCode.E))
+        if (playerNearby && Input.GetKey(KeyCode.Q))
         {
             holdTimer += Time.deltaTime;
 

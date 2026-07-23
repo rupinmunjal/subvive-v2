@@ -35,10 +35,17 @@ public class EngineMinigame : MonoBehaviour
     private EngineSystem engineSystem;
     private System.Action onSuccess;
     private System.Action onFail;
+    private bool skipInputThisFrame;
 
     void Update()
     {
         if (!isActive) return;
+
+        if (skipInputThisFrame)
+        {
+            skipInputThisFrame = false;
+            return;
+        }
 
         timer -= Time.deltaTime;
         if (timerBar != null)
@@ -70,6 +77,7 @@ public class EngineMinigame : MonoBehaviour
         timer = timeLimit;
         currentIndex = 0;
         isActive = true;
+        skipInputThisFrame = true;
 
         if (minigamePanel != null)
             minigamePanel.SetActive(true);
@@ -112,7 +120,7 @@ public class EngineMinigame : MonoBehaviour
     {
         if (c == sequence[currentIndex])
         {
-            // correct — tint that key image grey
+            // correct ï¿½ tint that key image grey
             if (keyImages[currentIndex] != null)
             {
                 Image img = keyImages[currentIndex].GetComponent<Image>();
@@ -127,7 +135,7 @@ public class EngineMinigame : MonoBehaviour
         }
         else
         {
-            // wrong key — fail
+            // wrong key ï¿½ fail
             FailMinigame();
         }
     }
