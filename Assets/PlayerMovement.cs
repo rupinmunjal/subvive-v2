@@ -13,6 +13,9 @@ public class PlayerMovement : MonoBehaviourPun
     public SpriteRenderer spriteRenderer;
     public LayerMask ladderLayer;
 
+    [Header("Audio")]
+    public AudioClip footstepSound;
+
     private float horizontalMovement;
     private bool climbInput;
     private bool descendInput;
@@ -20,12 +23,21 @@ public class PlayerMovement : MonoBehaviourPun
     private bool isOnLadder;
     private float defaultGravity;
     private Collider2D currentLadderCollider;
+    private AudioSource audioSource;
 
     void Start()
     {
         if (spriteRenderer == null)
             spriteRenderer = GetComponent<SpriteRenderer>();
         defaultGravity = player1.gravityScale;
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.clip = footstepSound;
+        audioSource.loop = true;
+        audioSource.playOnAwake = false;
+        audioSource.spatialBlend = 0f;
     }
 
     void Update()
@@ -57,6 +69,22 @@ public class PlayerMovement : MonoBehaviourPun
 
         //animator.SetFloat("yVelocity", player1.linearVelocity.y);
         animator.SetFloat("magnitude", Mathf.Abs(horizontalMovement));
+
+        bool isWalking = Mathf.Abs(horizontalMovement) > 0.01f && !isOnLadder;
+        if (isWalking && footstepSound != null)
+        {
+            audioSource.pitch = sprintInput ? sprintMultiplier : 1f;
+
+            if (!audioSource.isPlaying)
+            {
+                audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+                audioSource.Play();
+            }
+        }
+        else if (audioSource.isPlaying)
+        {
+            audioSource.Stop();
+        }
 
         if (horizontalMovement > 0.01f)
             transform.localScale = new Vector3(1, 1, 1);

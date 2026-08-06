@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class OxygenStation : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class OxygenStation : MonoBehaviour
 
     void Update()
     {
-        if (playerNearby && nearbyPlayerOxygen != null && Input.GetKey(KeyCode.Q))
+        if (playerNearby && nearbyPlayerOxygen != null && Keyboard.current.qKey.isPressed)
         {
             holdTimer += Time.deltaTime;
 

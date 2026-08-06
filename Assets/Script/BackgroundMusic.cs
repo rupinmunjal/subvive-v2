@@ -61,11 +61,13 @@ public class BackgroundMusic : MonoBehaviour
         }
     }
 
+    private static readonly string[] persistentScenes = { "HomeScene", "SettingsScene", "Tutorial1", "Tutorial2", "Tutorial3" };
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         Debug.Log($"[BackgroundMusic] OnSceneLoaded fired for '{scene.name}' (mode={mode}). This instance is from '{gameObject.scene.name}'.");
 
-        if (scene.name != "HomeScene" && scene.name != "SettingsScene")
+        if (System.Array.IndexOf(persistentScenes, scene.name) < 0)
         {
             Debug.Log($"[BackgroundMusic] Leaving menu scenes, destroying self.");
             SceneManager.sceneLoaded -= OnSceneLoaded;

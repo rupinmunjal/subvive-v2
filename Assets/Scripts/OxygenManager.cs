@@ -15,12 +15,16 @@ public class OxygenManager : MonoBehaviourPun
     public GameObject deathPanel;
     public TextMeshProUGUI deathCountdownText;
 
+    [Header("Audio")]
+    public AudioClip deathSound;
+
     private float currentOxygen;
     private bool isDead = false;
     private float respawnTimer = 0f;
 
     private PlayerMovement movement;
     private SpriteRenderer spriteRenderer;
+    private AudioSource audioSource;
     private int lastDisplayedCountdown = -1;
 
     void Start()
@@ -39,6 +43,11 @@ public class OxygenManager : MonoBehaviourPun
         currentOxygen = maxOxygen;
         movement = GetComponent<PlayerMovement>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+            audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
 
         if (deathPanel != null)
             deathPanel.SetActive(false);
@@ -82,6 +91,12 @@ public class OxygenManager : MonoBehaviourPun
         isDead = true;
         respawnTimer = respawnTime;
         lastDisplayedCountdown = -1;
+
+        if (deathSound != null && audioSource != null)
+        {
+            audioSource.volume = PlayerPrefs.GetFloat("SFXVolume", 1f);
+            audioSource.PlayOneShot(deathSound);
+        }
 
         // hide sprite
         if (spriteRenderer != null)

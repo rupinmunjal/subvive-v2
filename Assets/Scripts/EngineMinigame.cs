@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using TMPro;
 
 public class EngineMinigame : MonoBehaviour
@@ -59,7 +60,8 @@ public class EngineMinigame : MonoBehaviour
 
         foreach (char c in validChars)
         {
-            if (Input.GetKeyDown(c.ToString()))
+            Key key = (Key)System.Enum.Parse(typeof(Key), c.ToString().ToUpperInvariant());
+            if (Keyboard.current[key].wasPressedThisFrame)
             {
                 HandleInput(c);
                 break;

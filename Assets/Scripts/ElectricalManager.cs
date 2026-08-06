@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using System.Collections.Generic;
 using Photon.Pun;
 
@@ -75,7 +76,7 @@ public class ElectricalSystem : MonoBehaviourPun
         {
             if (box.isBlackedOut)
             {
-                if (box.playerNearby && Input.GetKeyDown(KeyCode.Q))
+                if (box.playerNearby && Keyboard.current.qKey.wasPressedThisFrame)
                     photonView.RPC("RPC_FixBox", RpcTarget.All, boxes.IndexOf(box));
                 continue;
             }

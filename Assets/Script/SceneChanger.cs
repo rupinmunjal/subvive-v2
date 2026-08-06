@@ -29,7 +29,7 @@ public class SceneChanger : MonoBehaviour
 
     public void StartGame()
     {
-        SceneManager.LoadScene("Tutorial1");
+        SceneManager.LoadScene("Submarine");
     }
 
     public void OpenTutorial1()

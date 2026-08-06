@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using Photon.Pun;
 
 public class AntennaTrigger : MonoBehaviour
@@ -6,6 +8,7 @@ public class AntennaTrigger : MonoBehaviour
     public AntennaSystem antennaSystem;
     public int antennaIndex;
     public float repairTime = 3f;
+    public Slider progressBar;
 
     private bool playerNearby = false;
     private float repairProgress = 0f;
@@ -13,15 +16,27 @@ public class AntennaTrigger : MonoBehaviour
 
     void Update()
     {
-        if (playerNearby && Input.GetKey(KeyCode.Q))
+        if (playerNearby && Keyboard.current.qKey.isPressed && antennaSystem.antennas[antennaIndex].isDamaged)
         {
-            if (!antennaSystem.antennas[antennaIndex].isDamaged) return;
-
             repairProgress += Time.deltaTime;
+
+            if (progressBar != null)
+            {
+                progressBar.gameObject.SetActive(true);
+                progressBar.value = repairProgress / repairTime;
+            }
+
             if (repairProgress >= repairTime && !repairRequested)
             {
                 repairProgress = 0f;
                 repairRequested = true;
+
+                if (progressBar != null)
+                {
+                    progressBar.value = 0f;
+                    progressBar.gameObject.SetActive(false);
+                }
+
                 antennaSystem.RequestRepairAntenna(antennaIndex);
             }
         }
@@ -29,6 +44,12 @@ public class AntennaTrigger : MonoBehaviour
         {
             repairProgress = 0f;
             repairRequested = false;
+
+            if (progressBar != null)
+            {
+                progressBar.value = 0f;
+                progressBar.gameObject.SetActive(false);
+            }
         }
     }
 

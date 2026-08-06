@@ -22,11 +22,15 @@ public class HullManager : MonoBehaviourPun, IPunObservable
     public float depthFollowSpeed = 2f;
 
     [Header("Destination Settings")]
-    public float destinationTime = 600f;
-    public float currentTime = 600f;
+    public float destinationTime = 300f;
+    public float currentTime = 300f;
+
+    [Header("Destination Scene")]
+    public string destinationSceneName = "SurfaceScene";
 
     private int activeLeaks = 0;
     private bool destinationPaused = false;
+    private bool destinationReached = false;
 
     private void Awake()
     {
@@ -74,14 +78,18 @@ public class HullManager : MonoBehaviourPun, IPunObservable
 
     private void UpdateDestinationTimer()
     {
-        if (destinationPaused) return;
+        if (destinationPaused || destinationReached) return;
 
         float speedMultiplier = GetSpeedMultiplier();
         currentTime -= Time.deltaTime * speedMultiplier;
         currentTime = Mathf.Clamp(currentTime, 0f, destinationTime);
 
         if (currentTime <= 0f)
+        {
+            destinationReached = true;
             Debug.Log("DESTINATION REACHED");
+            PhotonNetwork.LoadLevel(destinationSceneName);
+        }
     }
 
     public float GetSpeedMultiplier()

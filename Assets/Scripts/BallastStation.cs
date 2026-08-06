@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Photon.Pun;
 
 public class BallastStation : MonoBehaviour
@@ -12,7 +13,7 @@ public class BallastStation : MonoBehaviour
     {
         cooldownTimer -= Time.deltaTime;
 
-        if (playerNearby && Input.GetKeyDown(KeyCode.Q) && cooldownTimer <= 0f)
+        if (playerNearby && Keyboard.current.qKey.wasPressedThisFrame && cooldownTimer <= 0f)
         {
             HullManager.Instance.photonView.RPC("RPC_PumpBallast", RpcTarget.MasterClient);
             cooldownTimer = interactCooldown;

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 using Photon.Pun;
 
 public class LeakPoint : MonoBehaviour
@@ -61,7 +62,7 @@ public class LeakPoint : MonoBehaviour
         if (PhotonNetwork.IsMasterClient)
             HullManager.Instance.TakeDamage(damage * Time.deltaTime);
 
-        if (playerNearby && Input.GetKey(KeyCode.Q))
+        if (playerNearby && Keyboard.current.qKey.isPressed)
         {
             if (progressBar != null)
                 progressBar.gameObject.SetActive(true);

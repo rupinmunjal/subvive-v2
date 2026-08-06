@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class ElectricalBox : MonoBehaviour
 {
@@ -31,7 +32,7 @@ public class ElectricalBox : MonoBehaviour
     {
         if (isBlackedOut)
         {
-            if (playerNearby && Input.GetKeyDown(KeyCode.Q))
+            if (playerNearby && Keyboard.current.qKey.wasPressedThisFrame)
                 FixElectrical();
             return;
         }

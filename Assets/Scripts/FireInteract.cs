@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public class FireInteract : MonoBehaviour
 {
@@ -29,7 +30,7 @@ public class FireInteract : MonoBehaviour
             return;
         }
 
-        if (playerNearby && Input.GetKey(KeyCode.Q))
+        if (playerNearby && Keyboard.current.qKey.isPressed)
         {
             holdTimer += Time.deltaTime;
 

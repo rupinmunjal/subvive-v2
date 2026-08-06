@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SpriteFrameLoop : MonoBehaviour
 {
@@ -6,12 +7,14 @@ public class SpriteFrameLoop : MonoBehaviour
     public float frameRate = 8f;
 
     private SpriteRenderer spriteRenderer;
+    private Image image;
     private int frameIndex;
     private float timer;
 
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
+        image = GetComponent<Image>();
     }
 
     void OnEnable()
@@ -19,7 +22,7 @@ public class SpriteFrameLoop : MonoBehaviour
         frameIndex = 0;
         timer = 0f;
         if (frames != null && frames.Length > 0)
-            spriteRenderer.sprite = frames[0];
+            SetFrame(frames[0]);
     }
 
     void Update()
@@ -31,7 +34,13 @@ public class SpriteFrameLoop : MonoBehaviour
         {
             timer -= 1f / frameRate;
             frameIndex = (frameIndex + 1) % frames.Length;
-            spriteRenderer.sprite = frames[frameIndex];
+            SetFrame(frames[frameIndex]);
         }
+    }
+
+    private void SetFrame(Sprite sprite)
+    {
+        if (spriteRenderer != null) spriteRenderer.sprite = sprite;
+        if (image != null) image.sprite = sprite;
     }
 }

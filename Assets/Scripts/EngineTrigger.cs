@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using Photon.Pun;
 
 public class EngineTrigger : MonoBehaviour
@@ -11,7 +12,7 @@ public class EngineTrigger : MonoBehaviour
 
     void Update()
     {
-        if (playerNearby && Input.GetKeyDown(KeyCode.Q) && !minigameActive)
+        if (playerNearby && Keyboard.current.qKey.wasPressedThisFrame && !minigameActive)
         {
             if (engineSystem.isBroken)
             {
