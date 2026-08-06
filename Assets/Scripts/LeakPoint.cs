@@ -14,13 +14,13 @@ public class LeakPoint : MonoBehaviour
     public float hpRestoreAmount = 10f;
 
     [Header("Stage Settings")]
-    public float timeToStage2 = 15f;
-    public float timeToStage3 = 30f;
+    public float timeToStage2 = 20f;
+    public float timeToStage3 = 45f;
 
     [Header("Stage Damage Per Second")]
-    public float stage1Damage = 0.5f;
-    public float stage2Damage = 1.5f;
-    public float stage3Damage = 3f;
+    public float stage1Damage = 0.3f;
+    public float stage2Damage = 0.8f;
+    public float stage3Damage = 2f;
 
     [Header("Stage Visuals")]
     public GameObject stage0Visual;

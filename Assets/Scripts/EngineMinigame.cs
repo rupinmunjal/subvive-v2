@@ -6,7 +6,7 @@ using TMPro;
 public class EngineMinigame : MonoBehaviour
 {
     [Header("Settings")]
-    public float timeLimit = 15f;
+    public float timeLimit = 12f;
 
     [Header("UI References")]
     public GameObject minigamePanel;
