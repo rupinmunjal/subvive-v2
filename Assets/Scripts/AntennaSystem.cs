@@ -19,18 +19,18 @@ public class AntennaSystem : MonoBehaviourPun
     public Antenna[] antennas = new Antenna[2];
 
     [Header("Timing Settings")]
-    public float timeBetweenDamage = 30f;
-    public float timeToLevel2 = 20f;
-    public float timeToLevel3 = 40f;
+    public float timeBetweenDamage = 70f;
+    public float timeToLevel2 = 25f;
+    public float timeToLevel3 = 55f;
 
     [Header("Audio Clips")]
     public AudioClip staticClip;
     public AudioClip morseClip;
 
     [Header("Volume Settings")]
-    public float level1Volume = 0.2f;
-    public float level2Volume = 0.6f;
-    public float level3Volume = 0.6f;
+    public float level1Volume = 0.15f;
+    public float level2Volume = 0.45f;
+    public float level3Volume = 0.45f;
 
     [Header("Voice Mixer")]
     public UnityEngine.Audio.AudioMixer voiceMixer;

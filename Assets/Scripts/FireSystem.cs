@@ -20,8 +20,8 @@ public class FireSystem : MonoBehaviourPun
     public LadderBlock ladder3;
 
     [Header("Settings")]
-    public float timeBetweenFires = 20f;
-    public int maxActiveFires = 4;
+    public float timeBetweenFires = 60f;
+    public int maxActiveFires = 3;
 
     private float timer = 0f;
 

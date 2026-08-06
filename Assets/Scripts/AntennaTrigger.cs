@@ -7,7 +7,7 @@ public class AntennaTrigger : MonoBehaviour
 {
     public AntennaSystem antennaSystem;
     public int antennaIndex;
-    public float repairTime = 3f;
+    public float repairTime = 4f;
     public Slider progressBar;
 
     private bool playerNearby = false;

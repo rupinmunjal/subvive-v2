@@ -5,7 +5,7 @@ using UnityEngine.InputSystem;
 public class OxygenStation : MonoBehaviour
 {
     [Header("Settings")]
-    public float refillTime = 2f;
+    public float refillTime = 3f;
 
     [Header("References")]
     public Slider progressBar;

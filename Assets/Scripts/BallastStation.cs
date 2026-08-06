@@ -4,7 +4,7 @@ using Photon.Pun;
 
 public class BallastStation : MonoBehaviour
 {
-    public float interactCooldown = 0.2f; // min time between presses
+    public float interactCooldown = 0.15f; // min time between presses
 
     private bool playerNearby = false;
     private float cooldownTimer = 0f;

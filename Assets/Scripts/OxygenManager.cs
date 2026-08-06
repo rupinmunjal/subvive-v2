@@ -7,8 +7,8 @@ public class OxygenManager : MonoBehaviourPun
 {
     [Header("Oxygen Settings")]
     public float maxOxygen = 100f;
-    public float drainRate = 2f;
-    public float respawnTime = 5f;
+    public float drainRate = 1.2f;
+    public float respawnTime = 8f;
 
     [Header("UI References")]
     public TextMeshProUGUI oxygenText;

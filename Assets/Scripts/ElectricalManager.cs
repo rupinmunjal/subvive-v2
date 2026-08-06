@@ -20,11 +20,11 @@ public class ElectricalSystem : MonoBehaviourPun
     public List<ElectricalBox> boxes = new List<ElectricalBox>();
 
     [Header("Timing Settings")]
-    public float minTimeBetweenFailures = 15f;
-    public float maxTimeBetweenFailures = 40f;
-    public float flickerDuration = 5f;
+    public float minTimeBetweenFailures = 50f;
+    public float maxTimeBetweenFailures = 80f;
+    public float flickerDuration = 6f;
     public float flickerInterval = 0.2f;
-    public float gracePeriod = 10f;
+    public float gracePeriod = 15f;
 
     private float timer = 0f;
     private float nextFailureTime;

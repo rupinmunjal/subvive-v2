@@ -6,7 +6,7 @@ using Photon.Pun;
 public class FireInteract : MonoBehaviour
 {
     public FireSystem fireSystem;
-    public float extinguishTime = 2f;
+    public float extinguishTime = 3f;
     public Slider progressBar;
 
     private bool playerNearby = false;
