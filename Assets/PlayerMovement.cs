@@ -3,7 +3,7 @@ using UnityEngine.InputSystem;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class PlayerMovement : MonoBehaviourPun
+public class PlayerMovement : MonoBehaviourPun, IPunObservable
 {
     public Rigidbody2D player1;
     public float moveSpeed = 5f;
@@ -24,6 +24,7 @@ public class PlayerMovement : MonoBehaviourPun
     private float defaultGravity;
     private Collider2D currentLadderCollider;
     private AudioSource audioSource;
+    private float networkHorizontalMovement;
 
     void Start()
     {
@@ -42,7 +43,11 @@ public class PlayerMovement : MonoBehaviourPun
 
     void Update()
     {
-        if (!photonView.IsMine) return;
+        if (!photonView.IsMine)
+        {
+            UpdateRemoteVisuals();
+            return;
+        }
 
         float currentMoveSpeed = sprintInput ? moveSpeed * sprintMultiplier : moveSpeed;
         player1.linearVelocity = new Vector2(horizontalMovement * currentMoveSpeed, player1.linearVelocity.y);
@@ -90,6 +95,28 @@ public class PlayerMovement : MonoBehaviourPun
             transform.localScale = new Vector3(1, 1, 1);
         else if (horizontalMovement < -0.01f)
             transform.localScale = new Vector3(-1, 1, 1);
+    }
+
+    private void UpdateRemoteVisuals()
+    {
+        animator.SetFloat("magnitude", Mathf.Abs(networkHorizontalMovement));
+
+        if (networkHorizontalMovement > 0.01f)
+            transform.localScale = new Vector3(1, 1, 1);
+        else if (networkHorizontalMovement < -0.01f)
+            transform.localScale = new Vector3(-1, 1, 1);
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(horizontalMovement);
+        }
+        else
+        {
+            networkHorizontalMovement = (float)stream.ReceiveNext();
+        }
     }
 
     public void Move(InputAction.CallbackContext context)

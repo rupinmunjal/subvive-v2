@@ -4,7 +4,7 @@ using Photon.Pun;
 public class LeakSpawner : MonoBehaviourPun
 {
     public LeakPoint[] leakPoints;
-    public float timeBetweenLeaks = 20f;
+    public float timeBetweenLeaks = 45f;
 
     private float timer = 0f;
 

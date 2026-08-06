@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using Photon.Pun;
 
 public class FireInteract : MonoBehaviour
 {
@@ -64,13 +65,13 @@ public class FireInteract : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && other.GetComponentInParent<PhotonView>()?.IsMine == true)
             playerNearby = true;
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && other.GetComponentInParent<PhotonView>()?.IsMine == true)
             playerNearby = false;
     }
 }

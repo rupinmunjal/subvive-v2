@@ -55,13 +55,13 @@ public class AntennaTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && other.GetComponentInParent<PhotonView>()?.IsMine == true)
             playerNearby = true;
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") && other.GetComponentInParent<PhotonView>()?.IsMine == true)
             playerNearby = false;
     }
 }
