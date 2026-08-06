@@ -4,8 +4,8 @@ using Photon.Pun;
 public class EngineSystem : MonoBehaviourPun
 {
     [Header("Settings")]
-    public float minTimeBetweenFailures = 90f;
-    public float maxTimeBetweenFailures = 150f;
+    public float minTimeBetweenFailures = 30f;
+    public float maxTimeBetweenFailures = 30f;
     public float flashSpeed = 0.4f;
 
     [Header("References")]
